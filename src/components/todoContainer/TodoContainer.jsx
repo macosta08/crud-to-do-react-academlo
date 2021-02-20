@@ -10,6 +10,7 @@ export const TodoContainer = ({
   setTaskForUpdate,
   setIsEditOrAdd,
   taskForUpdate,
+  updateTask,
 }) => {
   const [tasks, setTasks] = useState([]);
   const [idToDelete, setIdToDelete] = useState(null);
@@ -67,12 +68,22 @@ export const TodoContainer = ({
 
   //--PUT-Edit-Task
   useEffect(() => {
-    if (Object.entries(taskForUpdate).length > 0) {
-      const findTask = tasks.find((element) => element._id == taskForUpdate.id);
-      findTask.task = "nueva tarea";
-      setTasks([...tasks]);
+    if (updateTask) {
+      const res = axios.put(
+        `https://todos-academlo.herokuapp.com/api/todo/${taskForUpdate.id}`,
+        updateTask
+      );
+      res.then((response) => {
+        const { _id: id, task, student } = response.data;
+        let findTask = tasks.find((element) => element._id == id);
+        findTask.task = task;
+        findTask.student = student;
+        setTasks([...tasks]);
+        setIsEditOrAdd("Create a New Task");
+        setResetForm(true);
+      });
     }
-  }, [taskForUpdate]);
+  }, [updateTask]);
 
   const handleDelete = (idDelete) => {
     setIdToDelete(idDelete);
@@ -103,6 +114,7 @@ export const TodoContainer = ({
 
   return (
     <>
+      {loading && <p>Loading..</p>}
       {!loading && (
         <Table striped bordered hover>
           <thead>

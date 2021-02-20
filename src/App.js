@@ -1,15 +1,20 @@
 import { useState } from "react";
-import "./App.css";
 import { CreateTodo } from "./components/createTodo/CreateTodo";
 import { TodoContainer } from "./components/todoContainer/TodoContainer";
+import "./App.css";
 
 function App() {
   const [newTask, setNewTask] = useState(null);
   const [resetForm, setResetForm] = useState(false);
   const [taskForUpdate, setTaskForUpdate] = useState({});
+  const [updateTask, setUpdateTask] = useState(null);
   const [isEditOrAdd, setIsEditOrAdd] = useState("Create a New Task");
   const onSubmit = (data) => {
-    setNewTask(data);
+    if (isEditOrAdd == "Create a New Task") {
+      setNewTask(data);
+    } else {
+      setUpdateTask(data);
+    }
   };
 
   return (
@@ -27,6 +32,7 @@ function App() {
           setTaskForUpdate={setTaskForUpdate}
           setIsEditOrAdd={setIsEditOrAdd}
           taskForUpdate={taskForUpdate}
+          updateTask={updateTask}
         />
       </div>
     </div>
