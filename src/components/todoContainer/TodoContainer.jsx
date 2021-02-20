@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
+import { Col, Container, Row, Spinner } from "react-bootstrap";
 import { getMethod } from "../../utils/methodHttp";
 import { TodoItem } from "../todoItem/TodoItem";
 
@@ -52,6 +52,8 @@ export const TodoContainer = ({
       res.then(() => {
         const filterTask = tasks.filter((task) => task._id !== idToDelete);
         setTasks(filterTask);
+        setIsEditOrAdd("Create a New Task");
+        setResetForm(true);
       });
     }
   }, [idToDelete]);
@@ -75,9 +77,8 @@ export const TodoContainer = ({
       );
       res.then((response) => {
         const { _id: id, task, student } = response.data;
-        let findTask = tasks.find((element) => element._id == id);
-        findTask.task = task;
-        findTask.student = student;
+        const findTask = tasks.find((element) => element._id == id);
+        [findTask.task, findTask.student] = [task, student];
         setTasks([...tasks]);
         setIsEditOrAdd("Create a New Task");
         setResetForm(true);
@@ -99,7 +100,7 @@ export const TodoContainer = ({
     setIsEditOrAdd("Edit Task");
   };
   const todoItem = tasks.map((task) => (
-    <tr key={task._id}>
+    <Col key={task._id}>
       <TodoItem
         id={task._id}
         task={task.task}
@@ -109,24 +110,13 @@ export const TodoContainer = ({
         handleChecked={handleChecked}
         handleUpdateTask={handleUpdateTask}
       />
-    </tr>
+    </Col>
   ));
 
   return (
-    <>
-      {loading && <p>Loading..</p>}
-      {!loading && (
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Done</th>
-              <th colSpan="2">Task</th>
-              <th>Student</th>
-            </tr>
-          </thead>
-          <tbody>{todoItem}</tbody>
-        </Table>
-      )}
-    </>
+    <Container>
+      {loading && <Spinner animation="grow" />}
+      {!loading && <Row>{todoItem}</Row>}
+    </Container>
   );
 };

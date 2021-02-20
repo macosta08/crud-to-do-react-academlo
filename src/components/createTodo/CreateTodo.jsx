@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-
+import "./createTodo.css";
 export const CreateTodo = ({
   onSubmit,
   resetForm,
+  setResetForm,
   taskForUpdate,
   addOrUpdate,
 }) => {
@@ -19,6 +20,7 @@ export const CreateTodo = ({
         task: "",
         student: "",
       });
+      setResetForm(false);
     }
   }, [resetForm]);
 
@@ -28,7 +30,7 @@ export const CreateTodo = ({
     setValue("student", student);
   }, [taskForUpdate, setValue]);
   return (
-    <div>
+    <div className="container-create">
       <h1>{addOrUpdate}</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group>
@@ -39,7 +41,6 @@ export const CreateTodo = ({
             name="task"
             ref={register}
           />
-          <br />
           <Form.Control
             size="lg"
             type="text"
@@ -48,9 +49,11 @@ export const CreateTodo = ({
             ref={register}
           />
           <br />
-          <Button type="submit" size="lg">
-            {addOrUpdate}
-          </Button>
+          <div>
+            <Button type="submit" variant="dark" size="lg">
+              {addOrUpdate}
+            </Button>
+          </div>
         </Form.Group>
       </form>
     </div>

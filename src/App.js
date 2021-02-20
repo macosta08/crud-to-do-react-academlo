@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { CreateTodo } from "./components/createTodo/CreateTodo";
 import { TodoContainer } from "./components/todoContainer/TodoContainer";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import pink from "@material-ui/core/colors/pink";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import { Col, Container, Row } from "react-bootstrap";
 
 function App() {
   const [newTask, setNewTask] = useState(null);
@@ -19,22 +23,34 @@ function App() {
 
   return (
     <div className="App">
-      <div className="App-header">
-        <CreateTodo
-          onSubmit={onSubmit}
-          resetForm={resetForm}
-          taskForUpdate={taskForUpdate}
-          addOrUpdate={isEditOrAdd}
-        />
-        <TodoContainer
-          newTask={newTask}
-          setResetForm={setResetForm}
-          setTaskForUpdate={setTaskForUpdate}
-          setIsEditOrAdd={setIsEditOrAdd}
-          taskForUpdate={taskForUpdate}
-          updateTask={updateTask}
-        />
+      <div className="icon-nav">
+        <Container>
+          <Row>
+            <Col>
+              <AssignmentIcon style={{ fontSize: 100, color: pink[100] }} />
+            </Col>
+          </Row>
+        </Container>
       </div>
+      <Container>
+        <div className="App-header">
+          <CreateTodo
+            onSubmit={onSubmit}
+            resetForm={resetForm}
+            setResetForm={setResetForm}
+            taskForUpdate={taskForUpdate}
+            addOrUpdate={isEditOrAdd}
+          />
+          <TodoContainer
+            newTask={newTask}
+            setResetForm={setResetForm}
+            setTaskForUpdate={setTaskForUpdate}
+            setIsEditOrAdd={setIsEditOrAdd}
+            taskForUpdate={taskForUpdate}
+            updateTask={updateTask}
+          />
+        </div>
+      </Container>
     </div>
   );
 }
