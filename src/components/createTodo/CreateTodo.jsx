@@ -48,12 +48,10 @@ export const CreateTodo = ({
             name="student"
             ref={register}
           />
-          <br />
-          <div>
-            <Button type="submit" variant="dark" size="lg">
-              {addOrUpdate}
-            </Button>
-          </div>
+
+          <Button type="submit" variant="dark" size="lg" style={{ margin: 8 }}>
+            {addOrUpdate}
+          </Button>
         </Form.Group>
       </form>
     </div>

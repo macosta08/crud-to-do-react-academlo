@@ -27,7 +27,7 @@ export const TodoItem = ({
             onClick={() => handleUpdateTask({ id, task, student, isCompleted })}
           />
         </a>
-        <a href="#" style={{ paddingLeft: 2 }}>
+        <a href="#" style={{ paddingLeft: 6 }}>
           <DeleteForeverIcon
             color="secondary"
             style={{ fontSize: 30 }}
@@ -43,8 +43,8 @@ export const TodoItem = ({
         />
       </Card.Header>
       <Card.Body>
-        <Card.Text>{student}</Card.Text>
         <Card.Title>{task}</Card.Title>
+        <Card.Text>{student}</Card.Text>
       </Card.Body>
     </Card>
   );
