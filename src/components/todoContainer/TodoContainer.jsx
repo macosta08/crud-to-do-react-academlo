@@ -67,8 +67,10 @@ export const TodoContainer = ({
 
   //--PUT-Edit-Task
   useEffect(() => {
-    if (taskForUpdate) {
-      console.log(taskForUpdate);
+    if (Object.entries(taskForUpdate).length > 0) {
+      const findTask = tasks.find((element) => element._id == taskForUpdate.id);
+      findTask.task = "nueva tarea";
+      setTasks([...tasks]);
     }
   }, [taskForUpdate]);
 
