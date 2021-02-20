@@ -8,6 +8,7 @@ export const TodoItem = ({
   isCompleted,
   handleDelete,
   handleChecked,
+  handleUpdateTask,
 }) => {
   return (
     <>
@@ -21,7 +22,12 @@ export const TodoItem = ({
       <td colSpan="2">{task}</td>
       <td>{student}</td>
       <td>
-        <Button variant="light">Update</Button>
+        <Button
+          variant="light"
+          onClick={() => handleUpdateTask({ id, task, student, isCompleted })}
+        >
+          Update
+        </Button>
       </td>
       <td>
         <Button variant="light" onClick={() => handleDelete(id)}>

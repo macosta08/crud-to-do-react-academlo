@@ -9,11 +9,3 @@ export const getMethod = async (url) => {
   }
 };
 
-export const postMethod = async (url, ) => {
-  try {
-    const res = await axios.post(url);
-    return res;
-  } catch (error) {
-    console.error(error);
-  }
-};

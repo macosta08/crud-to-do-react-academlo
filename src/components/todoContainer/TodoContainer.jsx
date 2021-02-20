@@ -4,13 +4,18 @@ import { Table } from "react-bootstrap";
 import { getMethod } from "../../utils/methodHttp";
 import { TodoItem } from "../todoItem/TodoItem";
 
-export const TodoContainer = ({ newTask }) => {
+export const TodoContainer = ({
+  newTask,
+  setResetForm,
+  setTaskForUpdate,
+  setIsEditOrAdd,
+  taskForUpdate,
+}) => {
   const [tasks, setTasks] = useState([]);
   const [idToDelete, setIdToDelete] = useState(null);
   const [loading, setLoading] = useState(true);
   const [taskDone, setTaskDone] = useState(null);
   const [idTaskDone, setIdTaskDone] = useState(null);
-  //const { _id, task, student, isCompleted } = tasks;
 
   //----GET---
   useEffect(() => {
@@ -32,6 +37,7 @@ export const TodoContainer = ({ newTask }) => {
       );
       res.then((response) => {
         setTasks([response.data, ...tasks]);
+        setResetForm(true);
       });
     }
   }, [newTask]);
@@ -49,14 +55,35 @@ export const TodoContainer = ({ newTask }) => {
     }
   }, [idToDelete]);
 
+  //--PUT-Checked-Task
+  useEffect(() => {
+    if (idTaskDone) {
+      axios.put(
+        `https://todos-academlo.herokuapp.com/api/todo/${idTaskDone}`,
+        taskDone
+      );
+    }
+  }, [taskDone, idTaskDone]);
+
+  //--PUT-Edit-Task
+  useEffect(() => {
+    if (taskForUpdate) {
+      console.log(taskForUpdate);
+    }
+  }, [taskForUpdate]);
+
   const handleDelete = (idDelete) => {
     setIdToDelete(idDelete);
   };
 
   const handleChecked = (isCompleted, id) => {
-    console.log("id: ", id, "isCompleted: ", isCompleted);
     setIdTaskDone(id);
     setTaskDone({ isCompleted });
+  };
+
+  const handleUpdateTask = (dataTask) => {
+    setTaskForUpdate(dataTask);
+    setIsEditOrAdd("Edit Task");
   };
   const todoItem = tasks.map((task) => (
     <tr key={task._id}>
@@ -67,6 +94,7 @@ export const TodoContainer = ({ newTask }) => {
         isCompleted={task.isCompleted}
         handleDelete={handleDelete}
         handleChecked={handleChecked}
+        handleUpdateTask={handleUpdateTask}
       />
     </tr>
   ));
