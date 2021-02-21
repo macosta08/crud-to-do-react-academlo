@@ -1,7 +1,6 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row, Spinner } from "react-bootstrap";
-import { getMethod } from "../../utils/methodHttp";
+import { request } from "../../utils/HttpMethods";
 import { TodoItem } from "../todoItem/TodoItem";
 
 export const TodoContainer = ({
@@ -20,71 +19,85 @@ export const TodoContainer = ({
 
   //----GET---
   useEffect(() => {
-    const infoTasks = async () => {
-      const res = await getMethod(
-        "https://todos-academlo.herokuapp.com/api/todos"
-      );
-      setTasks(res.data.todos);
+    const getTasks = async (endpoint = "/todos", method = "GET") => {
+      const response = await request(method, endpoint);
+      setTasks(response.data.todos);
       setLoading(false);
     };
-    infoTasks();
+    getTasks();
   }, []);
+
   //--POST---
   useEffect(() => {
-    if (newTask) {
-      const res = axios.post(
-        "https://todos-academlo.herokuapp.com/api/todo",
-        newTask
-      );
-      res.then((response) => {
-        setTasks([response.data, ...tasks]);
-        setResetForm(true);
-      });
-    }
+    const insertTask = async (newTask, endpoint = "/todo", method = "POST") => {
+      const response = await request(method, endpoint, newTask);
+      setTasks([response.data, ...tasks]);
+      setResetForm(true);
+    };
+    if (newTask) insertTask(newTask);
   }, [newTask]);
 
   //--DELETE---
   useEffect(() => {
-    if (idToDelete) {
-      const res = axios.delete(
-        `https://todos-academlo.herokuapp.com/api/todo/${idToDelete}`
-      );
-      res.then(() => {
-        const filterTask = tasks.filter((task) => task._id !== idToDelete);
-        setTasks(filterTask);
-        setIsEditOrAdd("Create a New Task");
-        setResetForm(true);
-      });
-    }
+    const deleteTask = async (
+      idToDelete,
+      endpoint = "/todo",
+      method = "DELETE"
+    ) => {
+      await request(method, `${endpoint}/${idToDelete}`);
+      const filterTasks = tasks.filter((task) => task._id !== idToDelete);
+      setTasks(filterTasks);
+      setIsEditOrAdd("Create a New Task");
+      setResetForm(true);
+    };
+    if (idToDelete) deleteTask(idToDelete);
   }, [idToDelete]);
 
   //--PUT-Checked-Task
   useEffect(() => {
-    if (idTaskDone) {
-      axios.put(
-        `https://todos-academlo.herokuapp.com/api/todo/${idTaskDone}`,
-        taskDone
-      );
-    }
+    const markAsDone = async (
+      idTaskDone,
+      taskDone,
+      endpoint = "/todo",
+      method = "PUT"
+    ) => await request(method, `${endpoint}/${idTaskDone}`, taskDone);
+
+    if (idTaskDone) markAsDone(idTaskDone, taskDone);
   }, [taskDone, idTaskDone]);
 
   //--PUT-Edit-Task
   useEffect(() => {
-    if (updateTask) {
-      const res = axios.put(
-        `https://todos-academlo.herokuapp.com/api/todo/${taskForUpdate.id}`,
+    const updTask = async (
+      idToUpdate,
+      updateTask,
+      endpoint = "/todo",
+      method = "PUT"
+    ) => {
+      const response = await request(
+        method,
+        `${endpoint}/${idToUpdate}`,
         updateTask
       );
-      res.then((response) => {
-        const { _id: id, task, student } = response.data;
-        const findTask = tasks.find((element) => element._id == id);
-        [findTask.task, findTask.student] = [task, student];
-        setTasks([...tasks]);
-        setIsEditOrAdd("Create a New Task");
-        setResetForm(true);
-      });
-    }
+      const { _id: id, task, student } = response.data;
+      const findTask = tasks.find((element) => element._id == id);
+      [findTask.task, findTask.student] = [task, student];
+      setTasks([...tasks]);
+      setIsEditOrAdd("Create a New Task");
+      setResetForm(true);
+    };
+    if (updateTask) updTask(taskForUpdate.id, updateTask);
   }, [updateTask]);
+
+  useEffect(() => {
+    const deleteAll = async (endpoint = "/todo", method = "DELETE") => {
+      const ids = tasks.map((task) => task._id);
+      console.log(ids);
+      for (let i = 0; i < 30; i++) {
+        await request(method, `${endpoint}/${ids[i]}`);
+      }
+    };
+    if (tasks.length > 30) deleteAll();
+  }, [tasks]);
 
   const handleDelete = (idDelete) => {
     setIdToDelete(idDelete);
@@ -99,6 +112,7 @@ export const TodoContainer = ({
     setTaskForUpdate(dataTask);
     setIsEditOrAdd("Edit Task");
   };
+
   const todoItem = tasks.map((task) => (
     <Col key={task._id}>
       <TodoItem
