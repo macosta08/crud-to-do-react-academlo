@@ -88,17 +88,6 @@ export const TodoContainer = ({
     if (updateTask) updTask(taskForUpdate.id, updateTask);
   }, [updateTask]);
 
-  useEffect(() => {
-    const deleteAll = async (endpoint = "/todo", method = "DELETE") => {
-      const ids = tasks.map((task) => task._id);
-      console.log(ids);
-      for (let i = 0; i < 30; i++) {
-        await request(method, `${endpoint}/${ids[i]}`);
-      }
-    };
-    if (tasks.length > 30) deleteAll();
-  }, [tasks]);
-
   const handleDelete = (idDelete) => {
     setIdToDelete(idDelete);
   };
